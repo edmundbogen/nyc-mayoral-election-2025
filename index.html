@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Mayoral Election 2025 - Live Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2847 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* News Broadcast Header */
+        .broadcast-header {
+            background: linear-gradient(to right, #dc143c 0%, #002868 50%, #dc143c 100%);
+            padding: 8px 0;
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.5);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .election-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .election-year {
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            letter-spacing: -2px;
+        }
+
+        .election-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+        }
+
+        .live-badge {
+            background: #dc143c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Breaking Banner */
+        .breaking-banner {
+            background: linear-gradient(90deg, #dc143c 0%, #b01030 100%);
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            border-left: 6px solid #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .breaking-label {
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .breaking-text {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* Main Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Candidate Section */
+        .candidates-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-header {
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #dc143c;
+            color: #ffffff;
+        }
+
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 5px solid #002868;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .candidate-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(5px);
+        }
+
+        .candidate-card.leading {
+            border-left-color: #dc143c;
+            background: rgba(220, 20, 60, 0.15);
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .candidate-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .candidate-party {
+            font-size: 14px;
+            color: #aaa;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .candidate-percentage {
+            font-size: 42px;
+            font-weight: 900;
+            color: #dc143c;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .poll-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 35px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .poll-fill {
+            background: linear-gradient(90deg, #dc143c 0%, #b01030 100%);
+            height: 100%;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 15px rgba(220, 20, 60, 0.5);
+        }
+
+        .poll-fill.blue {
+            background: linear-gradient(90deg, #002868 0%, #001a4d 100%);
+            box-shadow: 0 0 15px rgba(0, 40, 104, 0.5);
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #aaa;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: #dc143c;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-subtext {
+            font-size: 14px;
+            color: #ccc;
+            margin-top: 8px;
+        }
+
+        /* News Section */
+        .news-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .news-item {
+            padding: 20px;
+            border-left: 4px solid #002868;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .news-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #dc143c;
+        }
+
+        .news-time {
+            font-size: 12px;
+            color: #dc143c;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .news-headline {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .news-content {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* News Ticker */
+        .news-ticker {
+            background: #dc143c;
+            padding: 15px 0;
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -4px 20px rgba(220, 20, 60, 0.5);
+            z-index: 1000;
+        }
+
+        .ticker-label {
+            background: #002868;
+            padding: 15px 25px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            font-size: 13px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .ticker-content {
+            padding-left: 160px;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            display: inline-block;
+            margin-right: 100px;
+        }
+
+        .ticker-separator {
+            color: #ffffff;
+            margin: 0 15px;
+        }
+
+        /* Key Issues Section */
+        .issues-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 100px;
+            backdrop-filter: blur(10px);
+        }
+
+        .issue-tag {
+            display: inline-block;
+            background: rgba(0, 40, 104, 0.3);
+            border: 1px solid #002868;
+            padding: 10px 20px;
+            margin: 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .issue-tag:hover {
+            background: rgba(220, 20, 60, 0.3);
+            border-color: #dc143c;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .election-year {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .breaking-text {
+                font-size: 18px;
+            }
+
+            .candidate-percentage {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Broadcast Header -->
+    <div class="broadcast-header">
+        <div class="header-content">
+            <div class="election-logo">
+                <span class="election-year">2025</span>
+                <div>
+                    <div class="election-title">NYC Mayoral Election</div>
+                </div>
+            </div>
+            <div class="live-badge">LIVE UPDATES</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Breaking News Banner -->
+        <div class="breaking-banner">
+            <div class="breaking-label">BREAKING</div>
+            <div class="breaking-text">NYC voters head to polls November 4, 2025 - Race remains highly competitive</div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Candidates Section -->
+            <div class="candidates-section">
+                <h2 class="section-header">Latest Polling Data</h2>
+
+                <div class="candidate-card leading">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">Eric Adams</div>
+                            <div class="candidate-party">Democratic (Incumbent)</div>
+                        </div>
+                        <div class="candidate-percentage">32%</div>
+                    </div>
+                    <div class="poll-bar">
+                        <div class="poll-fill" style="width: 32%"></div>
+                    </div>
+                </div>
+
+                <div class="candidate-card">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">Scott Stringer</div>
+                            <div class="candidate-party">Democratic</div>
+                        </div>
+                        <div class="candidate-percentage">28%</div>
+                    </div>
+                    <div class="poll-bar">
+                        <div class="poll-fill blue" style="width: 28%"></div>
+                    </div>
+                </div>
+
+                <div class="candidate-card">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">Brad Lander</div>
+                            <div class="candidate-party">Democratic</div>
+                        </div>
+                        <div class="candidate-percentage">24%</div>
+                    </div>
+                    <div class="poll-bar">
+                        <div class="poll-fill blue" style="width: 24%"></div>
+                    </div>
+                </div>
+
+                <div class="candidate-card">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">Other Candidates</div>
+                            <div class="candidate-party">Various</div>
+                        </div>
+                        <div class="candidate-percentage">16%</div>
+                    </div>
+                    <div class="poll-bar">
+                        <div class="poll-fill" style="width: 16%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-label">Days Until Election</div>
+                    <div class="stat-value" id="countdown">365</div>
+                    <div class="stat-subtext">November 4, 2025</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Registered Voters</div>
+                    <div class="stat-value">5.6M</div>
+                    <div class="stat-subtext">NYC Metropolitan Area</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Polling Average</div>
+                    <div class="stat-value">±3.5%</div>
+                    <div class="stat-subtext">Margin of Error</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest News Section -->
+        <div class="news-section">
+            <h2 class="section-header">Latest News & Updates</h2>
+
+            <div class="news-item">
+                <div class="news-time">2 Hours Ago</div>
+                <div class="news-headline">Adams Unveils New Public Safety Initiative</div>
+                <div class="news-content">Mayor Eric Adams announced a comprehensive plan to address subway safety concerns, a key issue for NYC voters heading into the 2025 election.</div>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">5 Hours Ago</div>
+                <div class="news-headline">Stringer Releases Housing Affordability Plan</div>
+                <div class="news-content">Comptroller Scott Stringer proposed a major affordable housing initiative aimed at creating 100,000 new units over the next decade.</div>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">1 Day Ago</div>
+                <div class="news-headline">Lander Gains Momentum with Progressive Endorsements</div>
+                <div class="news-content">NYC Comptroller Brad Lander receives backing from major progressive organizations and unions, boosting his campaign visibility.</div>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">2 Days Ago</div>
+                <div class="news-headline">First Mayoral Debate Scheduled for March 2025</div>
+                <div class="news-content">The New York City Campaign Finance Board announces the debate schedule, with the first major debate set for March 15, 2025.</div>
+            </div>
+
+            <div class="news-item">
+                <div class="news-time">3 Days Ago</div>
+                <div class="news-headline">Poll Shows Close Three-Way Race</div>
+                <div class="news-content">Latest Quinnipiac poll indicates tight competition among top three candidates, with Adams maintaining slight lead but well within margin of error.</div>
+            </div>
+        </div>
+
+        <!-- Key Issues Section -->
+        <div class="issues-section">
+            <h2 class="section-header">Key Campaign Issues</h2>
+            <div style="text-align: center;">
+                <span class="issue-tag">Public Safety</span>
+                <span class="issue-tag">Housing Affordability</span>
+                <span class="issue-tag">Transit & Infrastructure</span>
+                <span class="issue-tag">Education</span>
+                <span class="issue-tag">Climate Change</span>
+                <span class="issue-tag">Economic Development</span>
+                <span class="issue-tag">Healthcare</span>
+                <span class="issue-tag">Homelessness</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Ticker -->
+    <div class="news-ticker">
+        <div class="ticker-label">LATEST</div>
+        <div class="ticker-content">
+            <span class="ticker-item">NYC Mayoral Election: November 4, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Democratic Primary: June 24, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Early Voting Begins: October 25, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Voter Registration Deadline: October 10, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">NYC Mayoral Election: November 4, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Democratic Primary: June 24, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Early Voting Begins: October 25, 2025</span>
+            <span class="ticker-separator">●</span>
+            <span class="ticker-item">Voter Registration Deadline: October 10, 2025</span>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const electionDate = new Date('November 4, 2025 00:00:00').getTime();
+            const now = new Date().getTime();
+            const distance = electionDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById('countdown').textContent = days;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 86400000); // Update daily
+
+        // Animate poll bars on load
+        window.addEventListener('load', function() {
+            const bars = document.querySelectorAll('.poll-fill');
+            bars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
